@@ -1,0 +1,57 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  height: 100vh;
+  background-color: rgb(233, 233, 233);
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: rgb(255, 255, 255);
+  flex: 0 0 auto;
+  padding: 20px 30px;
+}
+
+footer {
+  background-color: rgb(255, 255, 255);
+  flex: 0 0 auto;
+  padding: 20px 30px;
+}
+
+main {
+  flex: 1 0 auto;
+  padding: 20px 30px;
+}
+
+/* input[type="file"] {
+  visibility: hidden;
+  display: none;
+} */
+
+img {
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.048), 0 0 5px rgba(0, 0, 0, 0.068);
+  transition: all;
+  transition-duration: 0.2s;
+  width: 300px;
+}
+
+img:hover {
+  box-shadow: -2px 2px 15px 2px rgba(0, 0, 0, 0.178);
+}
+
+canvas {
+  width: 100%;
+}
+
+.image_wrapper {
+  width: 200px;
+  height: 250px;
+}
+
+.image_wrapper img {
+  width: 100%;
+}

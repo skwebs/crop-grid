@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Image Drawing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <input type="file" id="imageInput" value="teal" accept="image/*">
+
+        <select name="colsSelect" id="colsSelect">
+            <option value="">Select col</option>
+            <option value="1">One Col</option>
+            <option value="2">Two Cols</option>
+            <option value="3">Three Cols</option>
+            <option value="4">Four Cols</option>
+            <option value="5">Five Cols</option>
+            <option selected value="6">Six Cols</option>
+            <option value="7">Seven Cols</option>
+            <option value="8">Eight Cols</option>
+        </select>
+        <select name="rowsSelect" id="rowsSelect">
+            <option value="">Select Row</option>
+            <option selected value="1">One Row</option>
+            <option value="2">Two Rows</option>
+            <option value="3">Three Rows</option>
+            <option value="4">Four Rows</option>
+            <option value="5">Five Rows</option>
+            <option value="6">Six Rows</option>
+            <option value="7">Seven Rows</option>
+            <option value="8">Eight Rows</option>
+        </select>
+        <!-- <input type="color" id="backgroundColorSelect"> -->
+        <input type="color" id="backgroundColorInput">
+        <button id="downloadButton" disabled>Download</button>
+    </header>
+
+    <main>
+        <canvas id="canvas"></canvas>
+    </main>
+
+    <script>
+        "use strict";
+
+
+        const _ = e => document.querySelector(e);
+        const gap = 50; // Adjust gap as needed
+        const margin = gap / 2;
+
+        const targetImageWidth = 360; // Target image width
+        let targetImageRatio = 7 / 9;
+        const targetImageHeight = targetImageWidth / targetImageRatio
+
+        const borderWidth = 5;
+        const img = new Image();
+        const ppi = 300;
+        const scaleFactor = ppi / 96;
+        const paperSize = {
+            A4: { width: 2480, height: 3505 },
+            _4x6: { width: 1200, height: 1800 },
+            _5x7: { width: 1500, height: 2100 },
+        }
+
+        const picSize = {
+            type_3_5and4_5: { width: 360, height: 450 }
+        }
+
+
+        const canvas = _('#canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = paperSize.A4.width; // Adjust canvas size as needed
+        canvas.height = paperSize.A4.height;
+        canvas.style.backgroundColor = "#FFF";
+
+
+        let canvasImageBlob = null; // Store canvas image blob
+        let originalImageMimeType = ''; // Store original image MIME type
+        let numRows = parseInt(_('#rowsSelect').value, 10) || 1; // Default number of rows
+        let numCols = parseInt(_('#colsSelect').value, 10) || 6; // Default number of columns
+        let backgroundColor = '#008080'; // Default background color (white)
+
+        let isImageLoaded = false;
+
+        // Handle image input change event
+        _('#imageInput').addEventListener('change', handleImage);
+
+        // Handle background color input change event
+        _('#backgroundColorInput').addEventListener('input', setBackgroundColor);
+
+        // Handle download button click
+        _('#downloadButton').addEventListener('click', downloadCanvas);
+
+        // Handle rows select change event
+        _('#rowsSelect').addEventListener('change', updateGrid);
+
+        // Handle columns select change event
+        _('#colsSelect').addEventListener('change', updateGrid);
+
+
+        function handleImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                originalImageMimeType = file.type; // Store original image MIME type
+
+                img.onload = function () {
+                    isImageLoaded = true;
+
+                    setOriginalImageRatio(img)
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawGrid();
+                };
+                img.src = URL.createObjectURL(file);
+            }
+        }
+
+        function setOriginalImageRatio({ width, height }) {
+            targetImageRatio = width / height;
+        }
+
+        function setBackgroundColor(event) {
+            backgroundColor = event.target.value;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+        }
+
+        function updateGrid() {
+            numRows = parseInt(_('#rowsSelect').value, 10);
+            numCols = parseInt(_('#colsSelect').value, 10);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+        }
+
+        function drawGrid() {
+            if (isImageLoaded) {
+                // canvas.width = numCols * (targetImageWidth + gap) + margin; // Adjust canvas size as needed
+                // canvas.height = numRows * (img.height / img.width * targetImageWidth + gap) + margin;
+
+                for (let row = 0; row < numRows; row++) {
+                    for (let col = 0; col < numCols; col++) {
+                        const x = col * (targetImageWidth + gap) + margin; // Adjusted x position
+                        const y = row * (targetImageHeight + gap) + margin; // Adjusted y position
+
+                        // for maintain original image ratio
+                        // const y = row * (img.height / img.width * targetImageWidth + gap) + margin; // Adjusted y position
+
+                        ctx.fillStyle = backgroundColor;
+                        ctx.fillRect(x, y, targetImageWidth, targetImageHeight);
+
+                        ctx.strokeStyle = 'black';
+                        ctx.lineWidth = 5;
+
+                        ctx.strokeRect(x, y, targetImageWidth, targetImageHeight); // Stroke around the image
+                        ctx.drawImage(img, x, y, targetImageWidth, targetImageHeight);
+                    }
+                }
+                const imageUrl = URL.createObjectURL(canvasImageBlob);
+
+            }
+
+
+            // Store canvas image as Blob
+            canvas.toBlob(function (blob) {
+                canvasImageBlob = blob;
+                enableDownloadLink();
+            }, originalImageMimeType); // Pass original image MIME type
+        }
+
+
+        function enableDownloadLink() {
+            const downloadButton = _('#downloadButton');
+            downloadButton.disabled = false;
+            downloadButton.innerText = 'Download Canvas Image';
+        }
+
+        function downloadCanvas() {
+            if (canvasImageBlob) {
+                const timestamp = new Date().getTime();
+                const fileName = `canvas_image_${timestamp}.png`;
+                const link = document.createElement('a');
+                link.download = fileName;
+                link.href = URL.createObjectURL(canvasImageBlob);
+                link.click();
+            }
+        }
+
+        function displayCanvasImage(blob) {
+            const imageElement = _('#outputImage'); // Replace 'outputImage' with the ID of your image element
+
+            if (blob) {
+                const imageUrl = URL.createObjectURL(blob);
+                imageElement.src = imageUrl;
+            }
+        }
+
+        // Initialize canvas background color
+        setBackgroundColor({ target: { value: backgroundColor } });
+
+        displayCanvasImage(canvasImageBlob);
+
+    </script>
+</body>
+
+</html>

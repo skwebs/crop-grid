@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Image Drawing</title>
+    <link rel="stylesheet" href="vendors/cropper.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .image_wrapper {
+            width: 200px !important;
+            height: 250px !important;
+
+        }
+
+        img {
+            display: block !important;
+
+            /* This rule is very important, please don't ignore this */
+            max-width: 100% !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <input type="file" id="imageInput" value="teal" accept="image/*">
+
+        <select name="colsSelect" id="colsSelect">
+            <option value="">Select col</option>
+            <option value="1">One Col</option>
+            <option value="2">Two Cols</option>
+            <option value="3">Three Cols</option>
+            <option value="4">Four Cols</option>
+            <option value="5">Five Cols</option>
+            <option selected value="6">Six Cols</option>
+            <option value="7">Seven Cols</option>
+            <option value="8">Eight Cols</option>
+        </select>
+        <select name="rowsSelect" id="rowsSelect">
+            <option value="">Select Row</option>
+            <option selected value="1">One Row</option>
+            <option value="2">Two Rows</option>
+            <option value="3">Three Rows</option>
+            <option value="4">Four Rows</option>
+            <option value="5">Five Rows</option>
+            <option value="6">Six Rows</option>
+            <option value="7">Seven Rows</option>
+            <option value="8">Eight Rows</option>
+        </select>
+        <!-- <input type="color" id="backgroundColorSelect"> -->
+        <input type="color" id="backgroundColorInput">
+        <button id="downloadButton" disabled>Download</button>
+        <button id="cropButton">Crop</button>
+    </header>
+
+    <main>
+        <div class="image_wrapper">
+            <img id="select_image" src="select_image.png" alt="Select Image">
+        </div>
+        <canvas id="canvas"></canvas>
+    </main>
+    <script src="vendors/cropper.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

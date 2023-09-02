@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="vendors/cropper.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        div {
+            width: 300px !important;
+            height: 375px !important;
+
+        }
+
+        img {
+            display: block !important;
+
+            /* This rule is very important, please don't ignore this */
+            max-width: 100% !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div>
+        <img src="select_image.jpg" id="cropImage" alt="Crop">
+    </div>
+    <script src="vendors/cropper.min.js"></script>
+    <script>
+        "use strict";
+        const _ = e => document.querySelector(e);
+        let cropper;
+        cropper = new Cropper(_("#cropImage"), {
+            aspectRatio: 4 / 5,
+            dragMode: 'move',
+            autoCropArea: 1,
+            // restore: !1,
+            modal: !1,
+            // highlight: !1,
+            cropBoxMovable: !1,
+            cropBoxResizable: !1,
+            toggleDragModeOnDblclick: !1,
+            viewMode: 3,
+            crop(event) {
+                console.log(event.detail.x);
+                console.log(event.detail.y);
+                console.log(event.detail.width);
+                console.log(event.detail.height);
+                console.log(event.detail.rotate);
+                console.log(event.detail.scaleX);
+                console.log(event.detail.scaleY);
+            },
+        });
+
+    </script>
+</body>
+
+</html>
